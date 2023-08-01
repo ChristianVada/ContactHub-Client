@@ -1,16 +1,16 @@
 import { RoutesMain } from './routes';
 import './App.css'
-import { UserProvider } from './providers/UserProvider';
-import { ContactCardProvider } from './providers/ContactCardProvider';
+import { UserProvider } from './contexts/UserContext';
+import { ContactProvider } from './contexts/ContactContext';
 
 function App() {
 
   return (
     <>
       <UserProvider>
-        <ContactCardProvider>
+        <ContactProvider>
           <RoutesMain/>
-        </ContactCardProvider>
+        </ContactProvider>
       </UserProvider>
     </>
   )

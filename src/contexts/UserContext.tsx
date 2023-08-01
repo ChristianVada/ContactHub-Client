@@ -29,8 +29,6 @@ export const UserProvider = ({children} : IUserProviderProps) => {
       api.defaults.headers.common.Authorization = `Bearer ${token}`
       setLoading(false)
     }
-
-
   }, [])
 
   const loginUser = async (data: LoginData) =>  {

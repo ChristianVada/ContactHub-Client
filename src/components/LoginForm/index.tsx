@@ -4,17 +4,27 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useUserContext } from "../../hooks/useUserContext"
 
 export const LoginForm = () => {
-  const {register, handleSubmit} = useForm<LoginData>({resolver: zodResolver(schema)})
+  const { register, handleSubmit } = useForm<LoginData>({
+    resolver: zodResolver(schema),
+  })
 
-  const {loginUser} = useUserContext()
+  const { loginUser } = useUserContext()
 
-  return(
+  return (
     <form onSubmit={handleSubmit(loginUser)}>
       <label htmlFor="">Email</label>
-      <input type="text" placeholder="insira seu email" {...register("email")} />
+      <input
+        type="text"
+        placeholder="insira seu email"
+        {...register("email")}
+      />
 
       <label htmlFor="">Senha</label>
-      <input type="text" placeholder="insira sua senha" {...register("password")} />
+      <input
+        type="text"
+        placeholder="insira sua senha"
+        {...register("password")}
+      />
 
       <button type="submit">Enviar</button>
     </form>

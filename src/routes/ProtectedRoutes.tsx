@@ -7,6 +7,5 @@ export const ProtectedRoutes = () => {
   if(loading) {
     return <div>Carregando...</div>
   }
-
   return <Outlet/>
 }
