@@ -34,8 +34,13 @@ export const ContactCard = ({ contact }: IContactProps) => {
   })
 
   const submit = (data: UpdateData) => {
-    console.log(contactId)
-    updateContact(data, contactId)
+    const updatedData: UpdateData = {
+      name: data.name !== "" ? data.name : undefined,
+      email: data.email !== "" ? data.email : undefined,
+      telephone: data.telephone !== "" ? data.telephone : undefined,
+    }
+
+    updateContact(updatedData, contactId)
   }
 
   return (

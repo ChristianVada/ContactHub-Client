@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-const phoneNumberRegex = /^\(\d{2}\)\d-\d{4}-\d{4}$/
+const phoneNumberRegex = /^\d{10,11}$/
 
 const PhoneSchema = z
   .string()
@@ -10,7 +10,7 @@ const PhoneSchema = z
       return true
     }
     return phoneNumberRegex.test(value)
-  }, "Invalid phone number format. Should be (XX)X-XXXX-XXXX")
+  }, "Invalid phone number format. Should be 10 or 11 numbers")
 
 export const schema = z.object({
   name: z.string().optional(),
