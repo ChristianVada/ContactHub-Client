@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useUserContext } from "../../hooks/useUserContext"
 import { ILogin, LoginSchema } from "../../schemas/LoginSchema"
+import { StyledForm } from "./style"
 
 export const LoginForm = () => {
   const {
@@ -15,7 +16,7 @@ export const LoginForm = () => {
   const { loginUser } = useUserContext()
 
   return (
-    <form onSubmit={handleSubmit(loginUser)}>
+    <StyledForm onSubmit={handleSubmit(loginUser)}>
       <label htmlFor="email">Email</label>
       <input
         id="email"
@@ -35,6 +36,6 @@ export const LoginForm = () => {
       <p>{errors.password?.message}</p>
 
       <button type="submit">Entrar</button>
-    </form>
+    </StyledForm>
   )
 }

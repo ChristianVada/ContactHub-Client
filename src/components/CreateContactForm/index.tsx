@@ -5,6 +5,7 @@ import {
   ICreateContact,
 } from "../../schemas/CreateContactSchema"
 import { useContactContext } from "../../hooks/useContactContext"
+import { StyledForm } from "./style"
 
 interface ICreateContactFormProps {
   closeDialog: () => void
@@ -27,7 +28,7 @@ export const CreateContactForm = ({ closeDialog }: ICreateContactFormProps) => {
   }
 
   return (
-    <form onSubmit={handleSubmit(submit)} noValidate>
+    <StyledForm onSubmit={handleSubmit(submit)} noValidate>
       <label htmlFor="">Nome</label>
       <input type="text" {...register("name")} />
       <p>{errors.name?.message}</p>
@@ -41,6 +42,6 @@ export const CreateContactForm = ({ closeDialog }: ICreateContactFormProps) => {
       <p>{errors.telephone?.message}</p>
 
       <button type="submit">Enviar</button>
-    </form>
+    </StyledForm>
   )
 }

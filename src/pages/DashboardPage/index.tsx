@@ -5,6 +5,7 @@ import { useUserContext } from "../../hooks/useUserContext"
 import { Header } from "../../components/Header"
 import { useDialog } from "../../hooks/useDialog"
 import { CreateContactForm } from "../../components/CreateContactForm"
+import { StyledMain } from "./style"
 
 export const DashboardPage = () => {
   const { readContactList } = useContactContext()
@@ -16,21 +17,20 @@ export const DashboardPage = () => {
   useEffect(() => {
     readUser()
     readContactList()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <main>
+    <StyledMain>
       <Header />
       <h1>Dashboard page</h1>
       <button onClick={openDialog}>Criar contato</button>
 
       <dialog ref={dialogRef}>
-        <CreateContactForm closeDialog={closeDialog} />
         <button onClick={closeDialog}>Fechar Modal</button>
+        <CreateContactForm closeDialog={closeDialog} />
       </dialog>
 
       <ContactList />
-    </main>
+    </StyledMain>
   )
 }

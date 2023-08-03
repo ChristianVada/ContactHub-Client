@@ -8,6 +8,8 @@ import {
   IUpdateContact,
   UpdateContactSchema,
 } from "../../schemas/UpdateContactSchema"
+import { StyledLi } from "./style"
+import { StyledForm } from "../LoginForm/style"
 
 interface IContactProps {
   contact: IContact
@@ -39,9 +41,8 @@ export const ContactCard = ({ contact }: IContactProps) => {
   }
 
   return (
-    <li>
+    <StyledLi>
       <h3>{contact.name} </h3>
-      <p>{contact.id}</p>
       <p>{contact.email}</p>
       <p>{contact.telephone}</p>
       <p>{contact.created_at}</p>
@@ -60,7 +61,7 @@ export const ContactCard = ({ contact }: IContactProps) => {
 
       <dialog ref={dialogRef}>
         <button onClick={closeDialog}>Fechar Modal</button>
-        <form onSubmit={handleSubmit(submit)} noValidate>
+        <StyledForm onSubmit={handleSubmit(submit)} noValidate>
           <label htmlFor="">Nome</label>
           <input type="text" {...register("name")} />
           <p>{errors.name?.message}</p>
@@ -74,8 +75,8 @@ export const ContactCard = ({ contact }: IContactProps) => {
           <p>{errors.telephone?.message}</p>
 
           <button type="submit">Enviar</button>
-        </form>
+        </StyledForm>
       </dialog>
-    </li>
+    </StyledLi>
   )
 }

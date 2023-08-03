@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useUserContext } from "../../hooks/useUserContext"
 import { UpdateUserForm } from "../UpdateUserForm"
 import { useDialog } from "../../hooks/useDialog"
+import { StyledHeader } from "./style"
 
 export const Header = () => {
   const navigate = useNavigate()
@@ -17,18 +18,22 @@ export const Header = () => {
   const { closeDialog, dialogRef, openDialog } = useDialog()
 
   return (
-    <header>
-      <p>Olá {user?.name}</p>
-      <p>Email: {user?.email}</p>
-      <p>Telefone: {user?.telephone}</p>
-      <p>Conta criada em: {user?.created_at}</p>
+    <StyledHeader>
+      <div>
+        <h2>Olá {user?.name}</h2>
+        <p>Email: {user?.email}</p>
+        <p>Telefone: {user?.telephone}</p>
+        <p>Conta criada em: {user?.created_at}</p>
+      </div>
 
-      <button type="button" onClick={openDialog}>
-        Editar informações
-      </button>
-      <button type="button" onClick={logout}>
-        Logout
-      </button>
+      <div>
+        <button type="button" onClick={openDialog}>
+          Editar informações
+        </button>
+        <button type="button" onClick={logout}>
+          Logout
+        </button>
+      </div>
 
       <dialog ref={dialogRef}>
         <button onClick={closeDialog}>Fechar Modal</button>
@@ -37,6 +42,6 @@ export const Header = () => {
           Deletar conta
         </button>
       </dialog>
-    </header>
+    </StyledHeader>
   )
 }

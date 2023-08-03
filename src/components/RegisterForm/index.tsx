@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { IRegisters, RegisterSchema } from "../../schemas/RegisterSchema"
 import { useUserContext } from "../../hooks/useUserContext"
+import { StyledForm } from "./style"
 
 export const RegisterForm = () => {
   const {
@@ -15,7 +16,7 @@ export const RegisterForm = () => {
   const { createUser } = useUserContext()
 
   return (
-    <form onSubmit={handleSubmit(createUser)}>
+    <StyledForm onSubmit={handleSubmit(createUser)}>
       <label htmlFor="nome">Nome</label>
       <input id="nome" type="text" {...register("name")} />
       <p>{errors.name?.message}</p>
@@ -33,6 +34,6 @@ export const RegisterForm = () => {
       <p>{errors.telephone?.message}</p>
 
       <button type="submit">Criar conta</button>
-    </form>
+    </StyledForm>
   )
 }
