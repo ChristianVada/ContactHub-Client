@@ -1,32 +1,40 @@
 import { useForm } from "react-hook-form"
-import { LoginData, schema } from "./validator"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useUserContext } from "../../hooks/useUserContext"
+import { ILogin, LoginSchema } from "../../schemas/LoginSchema"
 
 export const LoginForm = () => {
-  const { register, handleSubmit } = useForm<LoginData>({
-    resolver: zodResolver(schema),
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ILogin>({
+    resolver: zodResolver(LoginSchema),
   })
 
   const { loginUser } = useUserContext()
 
   return (
     <form onSubmit={handleSubmit(loginUser)}>
-      <label htmlFor="">Email</label>
+      <label htmlFor="email">Email</label>
       <input
+        id="email"
         type="text"
         placeholder="insira seu email"
         {...register("email")}
       />
+      <p>{errors.email?.message}</p>
 
-      <label htmlFor="">Senha</label>
+      <label htmlFor="senha">Senha</label>
       <input
+        id="senha"
         type="text"
         placeholder="insira sua senha"
         {...register("password")}
       />
+      <p>{errors.password?.message}</p>
 
-      <button type="submit">Enviar</button>
+      <button type="submit">Entrar</button>
     </form>
   )
 }

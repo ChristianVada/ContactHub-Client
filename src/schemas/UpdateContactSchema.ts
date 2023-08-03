@@ -12,10 +12,10 @@ const PhoneSchema = z
     return phoneNumberRegex.test(value)
   }, "Invalid phone number format. Should be 10 or 11 numbers")
 
-export const schema = z.object({
+export const UpdateContactSchema = z.object({
   name: z.string().optional(),
-  email: z.string().optional(),
+  email: z.string().email().optional(),
   telephone: PhoneSchema,
 })
 
-export type UpdateData = z.infer<typeof schema>
+export type IUpdateContact = z.infer<typeof UpdateContactSchema>

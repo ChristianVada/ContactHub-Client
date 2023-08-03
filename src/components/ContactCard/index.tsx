@@ -2,8 +2,12 @@ import { useForm } from "react-hook-form"
 import { IContact } from "../../contexts/ContactContext"
 import { useContactContext } from "../../hooks/useContactContext"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { UpdateData, schema } from "./validator"
-import { useRef, useState } from "react"
+import { useState } from "react"
+import { useDialog } from "../../hooks/useDialog"
+import {
+  IUpdateContact,
+  UpdateContactSchema,
+} from "../../schemas/UpdateContactSchema"
 
 interface IContactProps {
   contact: IContact
@@ -12,35 +16,26 @@ interface IContactProps {
 export const ContactCard = ({ contact }: IContactProps) => {
   const { updateContact, deleteContact } = useContactContext()
 
+  const { closeDialog, dialogRef, openDialog } = useDialog()
+
   const [contactId, setContactId] = useState("")
-
-  const modalRef = useRef(null)
-
-  const handleOpenDialog = (contact) => {
-    modalRef.current.showModal()
-    setContactId(contact.id)
-  }
-
-  const handleCloseDialog = () => {
-    modalRef.current.close()
-  }
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(schema),
+  } = useForm<IUpdateContact>({
+    resolver: zodResolver(UpdateContactSchema),
   })
 
-  const submit = (data: UpdateData) => {
-    const updatedData: UpdateData = {
+  const submit = (data: IUpdateContact) => {
+    const updatedData: IUpdateContact = {
       name: data.name !== "" ? data.name : undefined,
       email: data.email !== "" ? data.email : undefined,
       telephone: data.telephone !== "" ? data.telephone : undefined,
     }
-
     updateContact(updatedData, contactId)
+    closeDialog()
   }
 
   return (
@@ -50,27 +45,33 @@ export const ContactCard = ({ contact }: IContactProps) => {
       <p>{contact.email}</p>
       <p>{contact.telephone}</p>
       <p>{contact.created_at}</p>
-      <button type="button" onClick={() => handleOpenDialog(contact)}>
+      <button
+        type="button"
+        onClick={() => {
+          openDialog()
+          setContactId(contact.id)
+        }}
+      >
         Editar
       </button>
       <button type="button" onClick={() => deleteContact(contact.id)}>
         Excluir
       </button>
 
-      <dialog ref={modalRef}>
-        <button onClick={handleCloseDialog}>Fechar Modal</button>
+      <dialog ref={dialogRef}>
+        <button onClick={closeDialog}>Fechar Modal</button>
         <form onSubmit={handleSubmit(submit)} noValidate>
           <label htmlFor="">Nome</label>
           <input type="text" {...register("name")} />
-          {errors.name ? <p>{errors.name.message}</p> : null}
+          <p>{errors.name?.message}</p>
 
           <label htmlFor="">email</label>
           <input type="text" {...register("email")} />
-          {errors.email ? <p>{errors.email.message}</p> : null}
+          <p>{errors.email?.message}</p>
 
           <label htmlFor="">Telefone</label>
           <input type="text" {...register("telephone")} />
-          {errors.telephone ? <p>{errors.telephone.message}</p> : null}
+          <p>{errors.telephone?.message}</p>
 
           <button type="submit">Enviar</button>
         </form>

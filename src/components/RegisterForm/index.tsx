@@ -1,25 +1,36 @@
-import {useForm} from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { IRegisters, RegisterSchema } from "../../schemas/RegisterSchema"
+import { useUserContext } from "../../hooks/useUserContext"
 
 export const RegisterForm = () => {
-  const {register, handleSubmit} = useForm()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IRegisters>({
+    resolver: zodResolver(RegisterSchema),
+  })
 
-  const submit = (formData) => {
-    console.log(formData)
-  }
+  const { createUser } = useUserContext()
 
   return (
-    <form onSubmit={handleSubmit(submit)}>
-      <label htmlFor="">Nome</label>
-      <input type="text" {...register("name")} />
+    <form onSubmit={handleSubmit(createUser)}>
+      <label htmlFor="nome">Nome</label>
+      <input id="nome" type="text" {...register("name")} />
+      <p>{errors.name?.message}</p>
 
-      <label htmlFor="">Email</label>
-      <input type="text" {...register("email")} />
-      
-      <label htmlFor="">Senha</label>
-      <input type="text" {...register("password")} />
+      <label htmlFor="email">Email</label>
+      <input id="email" type="text" {...register("email")} />
+      <p>{errors.email?.message}</p>
 
-      <label htmlFor="">Numero de contato</label>
-      <input type="text" {...register("telephone")} />
+      <label htmlFor="senha">Senha</label>
+      <input id="senha" type="text" {...register("password")} />
+      <p>{errors.password?.message}</p>
+
+      <label htmlFor="tel">Numero de contato</label>
+      <input id="tel" type="text" {...register("telephone")} />
+      <p>{errors.telephone?.message}</p>
 
       <button type="submit">Criar conta</button>
     </form>

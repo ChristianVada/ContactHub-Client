@@ -9,10 +9,10 @@ const PhoneSchema = z
     message: "Invalid phone number format. Should be 10 or 11 numbers",
   })
 
-export const schema = z.object({
+export const CreateContactSchema = z.object({
   name: z.string().nonempty("Nome é obrigatório"),
   email: z.string().email().nonempty("Email é obrigatório"),
   telephone: PhoneSchema,
 })
 
-export type CreateContact = z.infer<typeof schema>
+export type ICreateContact = z.infer<typeof CreateContactSchema>

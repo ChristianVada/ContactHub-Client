@@ -1,5 +1,7 @@
-import { ReactNode, createContext, useEffect, useState } from "react"
+import { ReactNode, createContext, useState } from "react"
 import { api } from "../services/api"
+import { ICreateContact } from "../schemas/CreateContactSchema"
+import { IUpdateContact } from "../schemas/UpdateContactSchema"
 
 export interface IContact {
   id: string
@@ -16,9 +18,10 @@ interface IContactProviderProps {
 interface IContactContext {
   contactList: IContact[]
   setContactList: React.Dispatch<React.SetStateAction<IContact[]>>
-  createContact: (data: type) => Promise<void>
-  updateContact: (data: type, contactId: string) => Promise<void>
+  createContact: (data: ICreateContact) => Promise<void>
+  updateContact: (data: IUpdateContact, contactId: string) => Promise<void>
   deleteContact: (contactId: string) => Promise<void>
+  readContactList: () => Promise<void>
 }
 
 export const ContactContext = createContext<IContactContext>(
@@ -28,32 +31,43 @@ export const ContactContext = createContext<IContactContext>(
 export const ContactProvider = ({ children }: IContactProviderProps) => {
   const [contactList, setContactList] = useState<IContact[]>([])
 
-  const loadContactList = async () => {
+  const readContactList = async () => {
     try {
-      const response = await api.get("contacts")
+      const token = localStorage.getItem("@agenda:token")
+      const response = await api.get("contacts", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       setContactList(response.data)
     } catch (error) {
       console.log(error)
     }
   }
 
-  useEffect(() => {
-    loadContactList()
-  }, [])
-
-  const createContact = async (data: type) => {
+  const createContact = async (data: ICreateContact) => {
     try {
-      const response = await api.post("/contacts", data)
-      loadContactList()
+      const token = localStorage.getItem("@agenda:token")
+      await api.post("/contacts", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      readContactList()
     } catch (error) {
       console.log(error)
     }
   }
 
-  const updateContact = async (data: type, contactId: string) => {
+  const updateContact = async (data: IUpdateContact, contactId: string) => {
     try {
-      const response = await api.patch(`/contacts/${contactId}`, data)
-      loadContactList()
+      const token = localStorage.getItem("@agenda:token")
+      await api.patch(`/contacts/${contactId}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      readContactList()
     } catch (error) {
       console.log(error)
     }
@@ -61,8 +75,13 @@ export const ContactProvider = ({ children }: IContactProviderProps) => {
 
   const deleteContact = async (contactId: string) => {
     try {
-      const response = await api.delete(`/contacts/${contactId}`)
-      loadContactList()
+      const token = localStorage.getItem("@agenda:token")
+      await api.delete(`/contacts/${contactId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      readContactList()
     } catch (error) {
       console.log(error)
     }
@@ -76,6 +95,7 @@ export const ContactProvider = ({ children }: IContactProviderProps) => {
         createContact,
         updateContact,
         deleteContact,
+        readContactList,
       }}
     >
       {children}

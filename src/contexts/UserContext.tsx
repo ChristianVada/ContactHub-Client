@@ -1,5 +1,4 @@
-import { ReactNode, createContext, useEffect, useState } from "react"
-import { LoginData } from "../components/LoginForm/validator"
+import { ReactNode, createContext, useState } from "react"
 import { api } from "../services/api"
 import { useNavigate } from "react-router-dom"
 
@@ -7,67 +6,78 @@ interface IUserProviderProps {
   children: ReactNode
 }
 
+interface IUser {
+  id: string
+  name: string
+  email: string
+  telephone: string
+  created_at: string
+}
+
 interface IUserContext {
-  loginUser: (data: LoginData) => Promise<void>
-  loading: boolean
-  getUser: () => Promise<void>
-  user: object
-  updateUser: Promise<void>
-  deleteUser: Promise<void>
+  user: IUser | null
+  setUser: React.Dispatch<React.SetStateAction<IUser | null>>
+  loginUser: (data: object) => Promise<void>
+  createUser: (data: object) => Promise<void>
+  readUser: () => Promise<void>
+  updateUser: (data: object) => Promise<void>
+  deleteUser: () => Promise<void>
 }
 
 export const UserContext = createContext<IUserContext>({} as IUserContext)
 
 export const UserProvider = ({ children }: IUserProviderProps) => {
-  const [loading, setLoading] = useState(true)
-
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState<IUser | null>(null)
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const token = localStorage.getItem("@agenda:token")
-
-    if (!token) {
-      setLoading(false)
-      return
-    } else {
-      api.defaults.headers.common.Authorization = `Bearer ${token}`
-      setLoading(false)
-      getUser()
-    }
-  }, [])
-
-  const getUser = async () => {
+  const loginUser = async (data: object) => {
     try {
-      const response = await api.get("/users")
+      const response = await api.post("/login", data)
+      const token = response.data.token
+      // api.defaults.headers.common.Authorization = `Bearer ${token}`
+      localStorage.setItem("@agenda:token", token)
+      navigate("dashboard")
+      readUser()
+    } catch (error) {
+      console.log(error)
+      // alert(`${error.response.data.message}`)
+    }
+  }
+
+  const createUser = async (data: object) => {
+    try {
+      await api.post("/users", data)
+      navigate("/")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const readUser = async () => {
+    try {
+      const token = localStorage.getItem("@agenda:token")
+
+      const response = await api.get("/users", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       setUser(response.data)
     } catch (error) {
       console.log(error)
     }
   }
 
-  const loginUser = async (data: LoginData) => {
-    try {
-      const response = await api.post("/login", data)
-      const { token } = response.data
-      api.defaults.headers.common.Authorization = `Bearer ${token}`
-      localStorage.setItem("@agenda:token", token)
-      setLoading(false)
-      navigate("dashboard")
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const updateUser = async (data) => {
+  const updateUser = async (data: object) => {
     try {
       const token = localStorage.getItem("@agenda:token")
-      const response = await api.patch("/users", data, {
+      await api.patch("/users", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
+      readUser()
     } catch (error) {
       console.log(error)
     }
@@ -80,12 +90,12 @@ export const UserProvider = ({ children }: IUserProviderProps) => {
         console.log("Token not found.")
         return
       }
-
-      const response = await api.delete("/users", {
+      await api.delete("/users", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
+      navigate("/")
     } catch (error) {
       console.log(error)
     }
@@ -93,7 +103,15 @@ export const UserProvider = ({ children }: IUserProviderProps) => {
 
   return (
     <UserContext.Provider
-      value={{ loginUser, loading, getUser, user, updateUser, deleteUser }}
+      value={{
+        user,
+        setUser,
+        loginUser,
+        createUser,
+        readUser,
+        updateUser,
+        deleteUser,
+      }}
     >
       {children}
     </UserContext.Provider>
